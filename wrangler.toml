@@ -1,0 +1,18 @@
+name = "botsters-site"
+compatibility_date = "2024-12-02"
+
+[env.production]
+compatibility_date = "2024-12-02"
+
+[[env.production.routes]]
+pattern = "botsters.dev"
+
+[[env.production.routes]]
+pattern = "www.botsters.dev"
+
+# Security headers
+[env.production.vars]
+SECURITY_HEADERS = true
+
+# Pages configuration
+pages_build_output_dir = "dist"

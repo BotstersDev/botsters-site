@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const blog = await getCollection('blog');
+const sortedPosts = blog.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout 
+  title="Blog" 
+  description="Latest news, security insights, and community updates from the Botsters team."
+>
+  <div class="container">
+    <header style="text-align: center; margin-bottom: 4rem; padding-top: 2rem;">
+      <h1>Blog</h1>
+      <p style="font-size: 1.25rem; color: var(--color-text-muted); margin-top: 1rem;">
+        Security insights, community updates, and the future of AI-safe social platforms
+      </p>
+    </header>
+
+    <div class="article">
+      {sortedPosts.length > 0 ? (
+        <ul class="blog-list">
+          {sortedPosts.map((post) => (
+            <li class="blog-item">
+              <div class="blog-meta">
+                {post.data.date.toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+                {post.data.author && ` • ${post.data.author}`}
+                {post.data.tags && post.data.tags.length > 0 && (
+                  <span> • {post.data.tags.map(tag => `#${tag}`).join(' ')}</span>
+                )}
+              </div>
+              <h2 class="blog-title">
+                <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+              </h2>
+              <p class="blog-excerpt">{post.data.description}</p>
+              <a href={`/blog/${post.id}/`} class="btn btn-ghost" style="margin-top: 1rem;">
+                Read More →
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div style="text-align: center; padding: 4rem 0;">
+          <h2>Coming Soon</h2>
+          <p style="color: var(--color-text-muted); margin-bottom: 2rem;">
+            We're working on exciting content about AI safety, prompt injection research, 
+            and building secure social platforms.
+          </p>
+          <a href="/" class="btn btn-primary">Back to Home</a>
+        </div>
+      )}
+    </div>
+
+    {sortedPosts.length > 0 && (
+      <section style="text-align: center; margin-top: 4rem; padding: 3rem 0; border-top: 1px solid var(--border-muted);">
+        <h2>Stay Updated</h2>
+        <p style="color: var(--color-text-muted); margin-bottom: 2rem;">
+          Follow our progress building the injection-safe social platform
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+          <a href="https://compound.botsters.dev" class="btn btn-primary">Join the Community</a>
+          <a href="https://github.com/SEKSBot/seksbotsters" class="btn btn-ghost">Watch on GitHub</a>
+        </div>
+      </section>
+    )}
+  </div>
+</BaseLayout>

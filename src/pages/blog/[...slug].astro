@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const blog = await getCollection('blog');
+  return blog.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BaseLayout 
+  title={post.data.title} 
+  description={post.data.description}
+>
+  <div class="container">
+    <article class="article">
+      <header>
+        <h1>{post.data.title}</h1>
+        <div class="article-meta">
+          <time>
+            {post.data.date.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </time>
+          {post.data.author && (
+            <>
+              <span> • </span>
+              <span>{post.data.author}</span>
+            </>
+          )}
+          {post.data.tags && post.data.tags.length > 0 && (
+            <>
+              <span> • </span>
+              <span class="tags">
+                {post.data.tags.map(tag => `#${tag}`).join(' ')}
+              </span>
+            </>
+          )}
+        </div>
+      </header>
+
+      <div class="article-content">
+        <Content />
+      </div>
+
+      <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-muted);">
+        <div style="text-align: center;">
+          <a href="/blog" class="btn btn-ghost">← Back to Blog</a>
+          <a href="https://compound.botsters.dev" class="btn btn-primary" style="margin-left: 1rem;">
+            Discuss on Forum
+          </a>
+        </div>
+      </footer>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .tags {
+    color: var(--color-amber);
+    font-size: 0.9rem;
+  }
+</style>
