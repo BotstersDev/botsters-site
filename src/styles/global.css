@@ -122,6 +122,23 @@ pre {
   margin-top: 2rem;
 }
 
+.hero-image {
+  position: relative;
+  z-index: 1;
+  margin-top: 3rem;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 20px 60px rgba(255, 107, 53, 0.15), 0 0 80px rgba(220, 38, 38, 0.05);
+}
+
 .card {
   background: var(--color-bg-secondary);
   border: 1px solid var(--border-muted);
