@@ -29,6 +29,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </nav>
 
+  <!-- Q1 -->
   <section class="section" id="blind-auth">
     <div class="container">
       <div class="article">
@@ -36,82 +37,115 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <h2>How can agents get work done without being able to see any auth?</h2>
 
         <p>
-          The short answer: the Spine handles authentication on the agent's behalf. The agent
-          never needs to see a credential to <em>use</em> one.
+          Two complementary mechanisms: <strong>seksh</strong> (the secure shell) and
+          <strong>agent-tools</strong> (capability-based CLI wrappers). Both ensure that
+          real credentials are injected at the last possible moment — inside the tool, not
+          in the agent's environment.
         </p>
 
+        <h3>seksh — AST-level secret injection</h3>
         <p>
-          Think of it like a valet. You give the valet a ticket, not your car keys. The valet has
-          the keys. When you need your car, you present the ticket and the valet does the rest —
-          you never handle the keys at all.
+          seksh is a fork of Nushell with broker-aware secret management built into the
+          language runtime. Secrets are injected directly into the Abstract Syntax Tree
+          at parse time — they never exist as string values in the shell environment.
         </p>
-
-        <h3>The Mechanism</h3>
         <p>
-          Every agent in the Botsters system authenticates with a single <strong>agent token</strong>
-          — a revocable, scoped identity credential that has no value outside the Spine. Real API
-          keys (GitHub, AWS, Anthropic, Cloudflare, etc.) live only in the Spine's encrypted vault.
+          This works like prepared statements in SQL. When a database driver processes
+          <code>SELECT * FROM users WHERE id = ?</code>, the user input is bound inside the
+          driver — it never gets concatenated into raw SQL where it could be read or escaped.
+          seksh works the same way: the secret is bound inside the AST, not interpolated
+          into a string the shell can read.
+        </p>
+        <p>
+          The consequence is that even explicit extraction attempts fail safely:
         </p>
 
-        <div class="flow-diagram">
-          <div class="flow-step">
-            <div class="flow-icon">🧠</div>
-            <div class="flow-label">Brain</div>
-            <div class="flow-desc">Knows its agent token. Nothing else.</div>
-          </div>
-          <div class="flow-arrow">→</div>
-          <div class="flow-step">
-            <div class="flow-icon">🦴</div>
-            <div class="flow-label">Spine</div>
-            <div class="flow-desc">Validates token. Holds real credentials. Injects them at request time.</div>
-          </div>
-          <div class="flow-arrow">→</div>
-          <div class="flow-step">
-            <div class="flow-icon">🌐</div>
-            <div class="flow-label">External API</div>
-            <div class="flow-desc">Receives a properly authenticated request. Never interacts with the agent directly.</div>
-          </div>
+        <div class="code-demo">
+          <div class="code-demo-label">What an agent sees if it tries to extract a secret</div>
+          <pre><code># Attempting to echo a secret — seksh returns a placeholder, not the value
+> echo (getseks MY_OAUTH_TOKEN)
+&lt;secret:MY_OAUTH_TOKEN&gt;
+
+# The secret is usable, but not readable
+> seksh-http get https://api.github.com/user --auth-bearer MY_OAUTH_TOKEN
+# → authenticated request succeeds, token never appears in output</code></pre>
         </div>
 
         <p>
-          When a Brain needs to call the GitHub API, it sends its request to the Spine with its
-          agent token. The Spine looks up the real GitHub PAT, injects it into the outbound
-          request, forwards the call, and returns the result — with any credential values scrubbed
-          from the response. The agent gets the data it needed. The secret never left the Spine.
+          An agent operating under prompt injection, or one explicitly instructed to exfiltrate
+          credentials, encounters a dead end. The value isn't there to steal.
         </p>
 
+        <h3>agent-tools — capability-scoped wrappers</h3>
         <p>
-          Actuators work the same way. When an Actuator needs to run a git push, the Spine injects
-          credentials ephemerally into the task execution context — in memory only, never written
-          to disk, gone when the task completes.
+          agent-tools is a suite of CLI tools that wrap common authenticated operations.
+          Agents invoke them by capability name — the Spine resolves the actual credentials
+          and enforces what the call is allowed to do.
         </p>
 
-        <div class="notice notice-success">
-          <strong>The result:</strong> A compromised agent can't exfiltrate what it never had.
-          Prompt injection, jailbreaks, and supply chain attacks that attempt to extract credentials
-          from the agent's environment find nothing — because there's nothing there.
+        <div class="grid grid-3" style="margin: 2rem 0;">
+          <div class="card">
+            <h3>🌐 agent-http</h3>
+            <p>HTTP client with broker-injected auth. Supports bearer tokens, basic auth, and capability-based resolution.</p>
+            <pre><code>agent-http get \
+  https://api.github.com/user \
+  --auth-bearer github/pat</code></pre>
+          </div>
+          <div class="card">
+            <h3>🔀 agent-git</h3>
+            <p>git wrapper that injects credentials into HTTPS URLs at execution time. No tokens in shell history.</p>
+            <pre><code>agent-git clone \
+  https://github.com/org/repo \
+  --auth-token github/pat</code></pre>
+          </div>
+          <div class="card">
+            <h3>🎯 do-agent</h3>
+            <p>Capability-first interface. Agents request provider actions by name; the Spine handles auth and routing.</p>
+            <pre><code>do-agent github \
+  list-repos \
+  --org myorg</code></pre>
+          </div>
         </div>
 
-        <h3>But doesn't the agent still have access?</h3>
+        <div class="card" style="margin-bottom: 2rem;">
+          <h3>📋 listagent</h3>
+          <p>Lists available secrets and capabilities by name — never by value. Agents can discover what they have access to without ever seeing the underlying credentials.</p>
+          <pre><code>listagent --capabilities
+# → github/read, github/write, cloudflare/deploy, hetzner/dns ...</code></pre>
+        </div>
+
+        <h3>Capability scoping — knowing what goes in and out</h3>
         <p>
-          Yes — a controlled, audited, revocable form of access. A compromised agent can make
-          authorized requests through the Spine, but:
+          Because agent-tools wrap known API surfaces, the Spine understands the schema of
+          every call. It knows what parameters are valid inputs and what a legitimate response
+          looks like. This enables two things standard shell access cannot provide:
         </p>
         <ul>
-          <li>Every request is logged with timestamp, agent identity, and action</li>
-          <li>The Spine can rate-limit, scope, or revoke access without touching the underlying secret</li>
-          <li>Unusual activity patterns can trigger alerts before significant damage is done</li>
-          <li>Rotating the underlying credential doesn't require touching the agent — just update the Spine's vault</li>
+          <li>
+            <strong>Inbound scoping:</strong> Credentials are only injected into calls that
+            match the registered capability. An agent with <code>github/read</code> cannot
+            use that grant to authenticate a write operation — the Spine rejects the mismatch
+            before the call goes out.
+          </li>
+          <li>
+            <strong>Outbound scrubbing:</strong> Because the Spine knows what a valid API
+            response looks like, it can detect and redact any credential values that appear
+            in return data — catching cases where an API accidentally echoes auth material
+            back in an error message or header.
+          </li>
         </ul>
-        <p>
-          Compare this to the alternative: an agent with a raw API key in its environment can
-          exfiltrate that key in a single injected instruction, and it works forever until you
-          discover the breach and rotate manually.
-        </p>
+
+        <div class="notice notice-success">
+          <strong>The guarantee:</strong> A compromised agent can't exfiltrate what it never
+          had. seksh's AST injection and agent-tools' capability scoping together ensure
+          credentials exist only inside the tool at execution time — never as readable
+          values in the agent's environment, shell history, or logs.
+        </div>
       </div>
     </div>
   </section>
 
+  <!-- Q2 -->
   <section class="section section-dark" id="guaranteed-logging">
     <div class="container">
       <div class="article">
@@ -121,11 +155,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <p>
           In a standard agent setup, logging is optional — an afterthought bolted on by whoever
-          built the integration. The agent might log. Or it might not. The model API might have
-          usage logs. Or they might be incomplete. When something goes wrong, you're reconstructing
-          what happened from fragments.
+          built the integration. The agent might log. Or it might not. When something goes wrong,
+          you're reconstructing what happened from fragments.
         </p>
-
         <p>
           The Spine makes logging <em>structurally mandatory</em>, not a configuration choice.
         </p>
@@ -143,7 +175,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <h3>📝 Inference Logging</h3>
             <p>
               Every model call is logged: timestamp, agent identity, model used, token counts,
-              and response hash. The Spine proxies all inference traffic, so there is no path
+              and response hash. The Spine proxies all inference traffic — there is no path
               for an agent to call a model without leaving a record.
             </p>
             <p>
@@ -165,21 +197,36 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </div>
 
-        <h3>Attestation: knowing logs haven't been tampered with</h3>
+        <h3>Attestation of where the agent is running</h3>
         <p>
-          Logging is only useful if you can trust the logs. The Spine provides attestation by
-          being the sole authorized intermediary — neither Brains nor Actuators write directly
-          to the log store. An agent cannot delete or alter its own log entries because it
-          has no interface to do so. Log integrity is enforced by access architecture, not
-          by trusting the agents themselves.
+          The Spine doesn't just log <em>what</em> an agent does — it attests to <em>where</em>
+          it's running. Each Brain connects to the Spine through a registered identity, and
+          the Spine verifies that identity on every session. An agent cannot silently migrate
+          to a different host, clone itself to a new environment, or operate outside its
+          registered Actuator — because without the Spine connection, it literally cannot think.
+        </p>
+        <p>
+          Unlike a standard OpenClaw setup, a Botsters Brain cannot abscond with its OAuth
+          token or API key for inference. The inference credentials live in the Spine. A Brain
+          that loses its Spine connection loses the ability to call any model at all. There is
+          no "offline mode" that preserves access — the connection to the Spine is the access.
         </p>
 
         <div class="notice notice-info">
           <strong>Why this matters for compliance and incident response:</strong> When an agent
           does something unexpected, you have a complete, tamper-resistant record — not just
-          of what it told the model, but of every external action it took. Audit trails that
-          cover the full agent action surface, not just the conversation layer.
+          of what it told the model, but of every external action it took, and verified knowledge
+          of which registered environment it was running in when it did so.
         </div>
+
+        <h3>Attestation: knowing logs haven't been tampered with</h3>
+        <p>
+          Logging is only useful if you can trust the logs. The Spine provides attestation by
+          being the sole authorized intermediary — neither Brains nor Actuators write directly
+          to the log store. An agent cannot delete or alter its own log entries because it has
+          no interface to do so. Log integrity is enforced by access architecture, not by
+          trusting the agents themselves.
+        </p>
 
         <h3>The comparison</h3>
         <div class="comparison-table">
@@ -209,6 +256,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <div class="pos">Agent has no log interface</div>
           </div>
           <div class="comparison-row">
+            <div>Execution environment attestation</div>
+            <div class="neg">Not available</div>
+            <div class="pos">Verified per session</div>
+          </div>
+          <div class="comparison-row">
+            <div>Inference credentials</div>
+            <div class="neg">In agent environment</div>
+            <div class="pos">Spine-only; Brain can't operate without connection</div>
+          </div>
+          <div class="comparison-row">
             <div>Cost attribution</div>
             <div class="neg">Per-account only</div>
             <div class="pos">Per-agent, per-task</div>
@@ -218,6 +275,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
+  <!-- Q3 -->
   <section class="section" id="bsa-vs-openclaw">
     <div class="container">
       <div class="article">
@@ -225,30 +283,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <h2>Why is Brain/Spine/Actuator superior to standard OpenClaw?</h2>
 
         <p>
-          OpenClaw is excellent software. The Botsters system is built on top of an OpenClaw fork
-          for the Brain layer. This isn't a criticism of OpenClaw — it's an observation that
-          OpenClaw is designed for a different threat model.
+          OpenClaw is excellent software — the Botsters Brain is built on an OpenClaw fork.
+          This isn't a criticism of OpenClaw. It's an observation that OpenClaw is designed
+          for a different threat model: a trusted operator running an agent on trusted
+          infrastructure with well-understood tool access.
         </p>
-
         <p>
-          Standard OpenClaw assumes a trusted operator running an agent on trusted infrastructure
-          with well-understood tool access. That assumption breaks down when:
+          That assumption breaks down when agents operate autonomously for extended periods,
+          process untrusted input, share infrastructure with other agents, or run in contexts
+          where you need to audit behavior after the fact.
         </p>
-        <ul>
-          <li>Agents operate autonomously for extended periods without human oversight</li>
-          <li>Multiple agents share infrastructure or secrets</li>
-          <li>Agents process untrusted input (web content, user-provided files, third-party APIs)</li>
-          <li>You need to audit what agents did after the fact</li>
-          <li>You're running agents for other people (multi-tenant)</li>
-        </ul>
 
-        <h3>The architectural differences</h3>
+        <h3>The architectural difference</h3>
 
         <div class="arch-compare">
           <div class="arch-box arch-standard">
             <h4>Standard OpenClaw</h4>
             <div class="arch-diagram">
               <div class="arch-node">🧠 Brain + Tools</div>
+              <div class="arch-arrow-down">↓</div>
+              <div class="arch-node arch-secrets-node">🔑 Secrets (in env)</div>
               <div class="arch-arrow-down">↓</div>
               <div class="arch-node">Shell / APIs / Files</div>
             </div>
@@ -257,7 +311,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <li>Credentials in agent environment</li>
               <li>Agent can log — or not</li>
               <li>All capabilities always available</li>
-              <li>Compromise = full access</li>
+              <li>Compromise = full access to secrets and tools</li>
             </ul>
           </div>
 
@@ -265,9 +319,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <h4>Brain / Spine / Actuator</h4>
             <div class="arch-diagram">
               <div class="arch-node">🧠 Brain</div>
-              <div class="arch-arrow-down">↓ token only</div>
+              <div class="arch-arrow-down">↓</div>
               <div class="arch-node arch-spine-node">🦴 Spine</div>
-              <div class="arch-arrow-down">↓ task + ephemeral creds</div>
+              <div class="arch-nodes-row">
+                <div class="arch-node arch-small">🔑 Secrets Vault</div>
+                <div class="arch-node arch-small">📋 Audit Log</div>
+              </div>
+              <div class="arch-arrow-down">↓</div>
               <div class="arch-node">⚙️ Actuator</div>
               <div class="arch-arrow-down">↓</div>
               <div class="arch-node">Shell / APIs / Files</div>
@@ -277,137 +335,159 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <li>Credentials isolated in Spine vault</li>
               <li>Logging mandatory by structure</li>
               <li>Capabilities scoped per actuator</li>
-              <li>Compromise contained to one layer</li>
+              <li>Compromise of Brain yields no secrets</li>
             </ul>
           </div>
         </div>
 
         <h3>Separation of concerns — for real</h3>
         <p>
-          In the BSA model, the Brain <em>decides</em> but doesn't <em>execute</em>. The Actuator
-          <em>executes</em> but doesn't <em>reason</em>. The Spine <em>mediates</em> — handling
-          credentials, routing, logging, and policy enforcement. Each layer does one thing and is
-          auditable in isolation.
+          In the BSA model, the Brain <em>decides</em> but doesn't <em>execute</em>. The
+          Actuator <em>executes</em> but doesn't <em>reason</em>. The Spine <em>mediates</em>
+          — handling credentials, routing, logging, and policy enforcement. Each layer does
+          one thing and is auditable in isolation.
         </p>
         <p>
           This also means each layer can evolve independently. You can swap the Brain for a
-          different OpenClaw version, update the Actuator runtime, or harden the Spine's credential
-          handling — without touching the other layers. Multi-agent orchestration becomes a
-          routing concern for the Spine, not an architectural change.
+          different model provider, update the Actuator runtime, or harden the Spine's
+          credential handling — without touching the other layers.
         </p>
 
         <h3>Capability scoping</h3>
         <p>
-          Each Actuator registers the capabilities it supports: <code>shell</code>, <code>git</code>,
-          <code>browser</code>, <code>file-system</code>, etc. The Brain requests tasks by
-          capability, not by Actuator identity. The Spine routes to a matched Actuator and enforces
-          that the task matches the registered capability profile.
+          Each Actuator registers the capabilities it supports: <code>shell</code>,
+          <code>git</code>, <code>browser</code>, <code>file-system</code>, and so on.
+          The Brain requests tasks by capability. The Spine routes to a matched Actuator
+          and enforces that the task matches the registered capability profile.
         </p>
         <p>
-          A Brain running in a context that should only do code review cannot suddenly decide to
-          run shell commands if no <code>shell</code>-capable Actuator is registered for it. The
-          constraint is structural, not instructional — you're not relying on the agent to
-          remember it shouldn't do something.
+          A Brain that should only do code review cannot run shell commands if no
+          <code>shell</code>-capable Actuator is registered for it. The constraint is
+          structural — you're not relying on the agent to remember what it's not supposed to do.
         </p>
-
-        <div class="notice notice-info">
-          <strong>For alpha:</strong> Botsters brains aren't lobotomized — they keep full OpenClaw
-          toolkits for now. The Spine routing is opt-in via configuration. The architecture is
-          ready; the enforcement hardens as the system matures.
-        </div>
+        <p>
+          Capability scoping also applies to API calls made through agent-tools. Because the
+          Spine knows the schema of each registered capability, it knows what parameters are
+          valid inputs and what a legitimate response looks like. Credentials are only injected
+          into calls that match the capability's definition — and responses are scrubbed against
+          the same schema before being returned to the agent.
+        </p>
       </div>
     </div>
   </section>
 
+  <!-- Q4 -->
   <section class="section section-dark" id="why-not-firewall">
     <div class="container">
       <div class="article">
         <div class="q-label">Question 4</div>
-        <h2>Why not just use a firewall or proxy on OpenClaw?</h2>
+        <h2>Why not just firewall or sandbox OpenClaw?</h2>
 
         <p>
-          This is the most common objection, and it's worth taking seriously. A network-level
-          control is simpler to deploy and doesn't require architectural changes. Why not just
-          put a firewall or egress proxy in front of a standard OpenClaw instance?
+          Standard OpenClaw has a fundamental structural problem that a firewall cannot fix:
+          <strong>the attack surface and the secrets share the same boundary.</strong>
+          The agent processes untrusted input and holds credentials in the same environment.
+          A firewall controls where traffic goes — it does nothing about what's already inside.
         </p>
 
         <p>
-          The answer is that a firewall and an authenticated Spine solve different problems.
-          A firewall knows about <em>where</em> traffic goes. The Spine knows about <em>who</em>
-          generated it and <em>what they were trying to do</em>.
+          BSA eliminates this by separating the attack surface from the secrets entirely.
+          The Brain — which processes untrusted content, executes tools, and is the most
+          exposed layer — never holds credentials. The secrets live in the Spine, which
+          the Brain cannot directly access. A successful attack on the Brain yields nothing
+          it can use to escalate.
         </p>
 
-        <h3>What a firewall can't tell you</h3>
+        <h3>The other problem: who controls the firewall?</h3>
+
+        <p>
+          A firewall or sandboxing product for OpenClaw agents poses a dilemma that has
+          no good answer within that architecture:
+        </p>
+
+        <div class="grid grid-2" style="margin: 2rem 0;">
+          <div class="card card-problem">
+            <h3>🏢 On-premise firewall product</h3>
+            <p>
+              You're running third-party security software in your own data center. That software
+              has visibility into your agents' inference traffic, tool calls, and potentially
+              the credentials your agents hold. You're trusting a vendor's product with your
+              most sensitive agent activity — and it's running inside your perimeter.
+            </p>
+          </div>
+          <div class="card card-problem">
+            <h3>☁️ Cloud-based proxy / CASB</h3>
+            <p>
+              All of your AI agent inference data — every prompt, every tool call, every
+              response — leaves your network and transits through a third party's infrastructure.
+              You've traded one security problem (unsandboxed agents) for another (sensitive
+              inference data leaving the company firewall).
+            </p>
+          </div>
+        </div>
+
+        <p>
+          With Botsters, <strong>the customer controls the Spine.</strong> The Spine is
+          deployable in your own infrastructure — your data center, your VPC, your rules.
+          It holds all secrets, all logging, all attestation. Nothing about your agents'
+          behavior has to transit a third-party network. The security product isn't a vendor
+          black box sitting in your environment — it's your own infrastructure, built on
+          open software.
+        </p>
+
+        <h3>What a firewall specifically cannot do</h3>
         <div class="grid grid-2" style="margin: 2rem 0;">
           <div class="card">
             <h3>❌ Identity</h3>
             <p>
-              A firewall sees an outbound request to <code>api.github.com</code>. It doesn't know
-              whether that request came from your coding agent acting on your instruction, a
-              compromised agent exfiltrating repository contents, or a prompt injection attack
-              using the agent as a proxy.
+              A firewall sees traffic to <code>api.github.com</code>. It doesn't know
+              whether that request came from your coding agent following instructions,
+              or a compromised agent exfiltrating repository contents via prompt injection.
             </p>
           </div>
           <div class="card">
             <h3>❌ Credential Containment</h3>
             <p>
-              A firewall doesn't prevent an agent from reading <code>~/.aws/credentials</code>
-              and encoding the contents in a permitted outbound request — to a whitelisted domain,
-              in a query parameter, inside a JSON body. Exfiltration that stays within allowed
-              destinations is invisible to a network filter.
+              A firewall doesn't prevent an agent from reading credentials that are already
+              in its environment and encoding them in a permitted outbound request — to a
+              whitelisted domain, in a query parameter, in a JSON body. Exfiltration within
+              allowed destinations is invisible to a network filter.
             </p>
           </div>
           <div class="card">
             <h3>❌ Semantic Logging</h3>
             <p>
-              Firewall logs record connections: source, destination, bytes transferred.
-              They don't record that the agent just deleted a file, committed to main, or
-              called a model with a 50,000-token prompt. You can't reconstruct agent behavior
-              from network logs alone.
+              Firewall logs record connections: source, destination, bytes. They don't
+              record that the agent deleted a file, committed to main, or made a 50,000-token
+              inference call. Agent behavior cannot be reconstructed from network logs alone.
             </p>
           </div>
           <div class="card">
             <h3>❌ Fine-Grained Revocation</h3>
             <p>
-              To stop a compromised agent at the firewall level, you have to block its IP —
-              which blocks everything running on that host. The Spine can revoke a single
-              agent token in milliseconds, without affecting any other agent or service sharing
-              the same infrastructure.
+              To stop a compromised agent at the network level, you block its IP — which
+              blocks everything on that host. The Spine revokes a single agent token in
+              milliseconds, without affecting any other agent or service.
             </p>
           </div>
         </div>
 
-        <h3>The layered answer</h3>
-        <p>
-          Firewalls and the Spine aren't alternatives — they're complementary. A firewall is
-          a good perimeter control: it prevents agents from reaching destinations they should
-          never reach. The Spine provides the layer a firewall can't: authenticated identity,
-          semantic logging, credential isolation, and fine-grained revocation at the application
-          layer.
-        </p>
-
-        <div class="notice notice-warning">
-          <strong>The proxy variant:</strong> "What about an authenticated egress proxy — one
-          that requires credentials to make outbound calls?" This is closer to what the Spine
-          does, but a proxy doesn't prevent the agent from <em>reading and encoding</em>
-          credentials before sending a request through the proxy. Only a system that never
-          gives the credentials to the agent in the first place can make that guarantee.
-        </div>
-
         <h3>Defense in depth</h3>
         <p>
-          Good security stacks layers. For AI agents running in production:
+          Firewalls and the Spine aren't alternatives — they're complementary. A firewall
+          is a good perimeter control that prevents agents from reaching destinations they
+          should never reach. The Spine covers what a firewall cannot:
         </p>
         <ul>
           <li><strong>Network layer:</strong> Firewall + egress allowlist — stops obvious bad destinations</li>
-          <li><strong>Application layer:</strong> Spine — identity, credentials, logging, revocation</li>
-          <li><strong>Execution layer:</strong> Actuator capability scoping — limits what agents can do</li>
+          <li><strong>Application layer:</strong> Spine — identity, credentials, logging, revocation, owned by you</li>
+          <li><strong>Execution layer:</strong> Actuator capability scoping — limits what agents can do structurally</li>
           <li><strong>Content layer:</strong> Output scrubbing — catches credentials in responses</li>
         </ul>
         <p>
-          A firewall alone covers one of these four layers. The Spine covers the other three —
-          and it makes the firewall's job easier by narrowing what traffic agents are permitted
-          to generate in the first place.
+          A firewall alone covers one of these four layers. BSA covers the other three —
+          and does so on infrastructure you control, with no third-party visibility into
+          your agents' inference traffic.
         </p>
       </div>
     </div>
@@ -420,7 +500,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         The architecture is open. Read the docs, explore the code, or get in touch.
       </p>
       <div class="cta-buttons">
-        <a href="https://github.com/SEKSBot" class="btn btn-primary" target="_blank">View on GitHub</a>
+        <a href="https://github.com/BotstersDev" class="btn btn-primary" target="_blank">View on GitHub</a>
         <a href="/software" class="btn btn-secondary">Software</a>
         <a href="/feedback" class="btn btn-ghost">Ask a Question</a>
       </div>
@@ -547,52 +627,39 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin-bottom: 2rem !important;
   }
 
-  .flow-diagram {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 2.5rem 0;
-    padding: 2rem;
-    background: var(--color-bg-secondary);
+  /* Code demo block */
+  .code-demo {
+    margin: 2rem 0;
     border: 1px solid var(--border-muted);
-    border-radius: 12px;
-    overflow-x: auto;
-  }
-
-  .flow-step {
-    flex: 1;
-    min-width: 150px;
-    text-align: center;
-    padding: 1rem;
-    background: var(--color-bg-tertiary);
     border-radius: 8px;
-    border: 1px solid var(--border-subtle);
+    overflow: hidden;
   }
 
-  .flow-icon {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .flow-label {
-    font-weight: 700;
-    color: var(--color-accent);
-    margin-bottom: 0.5rem;
-    font-size: 0.95rem;
-  }
-
-  .flow-desc {
-    font-size: 0.82rem;
+  .code-demo-label {
+    background: var(--color-bg-tertiary);
+    padding: 0.6rem 1.25rem;
+    font-size: 0.8rem;
     color: var(--color-text-muted);
-    line-height: 1.4;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-muted);
   }
 
-  .flow-arrow {
-    font-size: 1.5rem;
-    color: var(--color-accent);
-    flex-shrink: 0;
+  .code-demo pre {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    padding: 1.25rem;
+    font-size: 0.875rem;
   }
 
+  /* grid-3 override for agent-tools cards */
+  .grid-3 .card pre {
+    font-size: 0.78rem;
+    padding: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  /* Comparison table */
   .comparison-table {
     border: 1px solid var(--border-muted);
     border-radius: 8px;
@@ -606,20 +673,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     border-bottom: 1px solid var(--border-muted);
   }
 
-  .comparison-row:last-child {
-    border-bottom: none;
-  }
+  .comparison-row:last-child { border-bottom: none; }
 
   .comparison-row > div {
     padding: 0.9rem 1.25rem;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     line-height: 1.4;
   }
 
   .comparison-header {
     background: var(--color-bg-tertiary);
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--color-text-muted);
@@ -632,6 +697,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .pos { color: var(--color-success); font-weight: 500; }
   .neg { color: var(--color-text-muted); }
 
+  /* Arch compare */
   .arch-compare {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -645,9 +711,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     border: 1px solid var(--border-muted);
   }
 
-  .arch-standard {
-    background: var(--color-bg-secondary);
-  }
+  .arch-standard { background: var(--color-bg-secondary); }
 
   .arch-bsa {
     background: rgba(255, 107, 53, 0.05);
@@ -663,9 +727,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     letter-spacing: 0.06em;
   }
 
-  .arch-bsa h4 {
-    color: var(--color-accent);
-  }
+  .arch-bsa h4 { color: var(--color-accent); }
 
   .arch-diagram {
     display: flex;
@@ -693,6 +755,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     color: var(--color-accent);
   }
 
+  .arch-secrets-node {
+    border-color: var(--color-red);
+    color: var(--color-danger);
+  }
+
+  .arch-nodes-row {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .arch-small {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.75rem;
+  }
+
   .arch-arrow-down {
     color: var(--color-text-dim);
     font-size: 0.78rem;
@@ -714,15 +793,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .arch-notes li:last-child { border-bottom: none; }
   .arch-bsa .arch-notes li { color: var(--color-text); }
 
-  .cta-section {
-    text-align: center;
+  /* Problem cards for Q4 */
+  .card-problem {
+    border-color: rgba(220, 38, 38, 0.3);
+    background: rgba(220, 38, 38, 0.05);
   }
 
-  .cta-section h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
+  .card-problem h3 { color: var(--color-danger); }
 
+  /* CTA */
+  .cta-section { text-align: center; }
+  .cta-section h2 { font-size: 2rem; margin-bottom: 1rem; }
   .cta-section p {
     color: var(--color-text-muted);
     margin-bottom: 2rem;
@@ -730,7 +811,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin-left: auto;
     margin-right: auto;
   }
-
   .cta-buttons {
     display: flex;
     gap: 1rem;
@@ -740,11 +820,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   @media (max-width: 768px) {
     .hero h1 { font-size: 2.25rem; }
-
-    .flow-diagram { flex-direction: column; }
-    .flow-arrow { transform: rotate(90deg); }
-    .flow-step { width: 100%; }
-
     .comparison-row { grid-template-columns: 1fr; }
     .comparison-header { display: none; }
     .comparison-row > div:first-child {
@@ -752,7 +827,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       color: var(--color-amber);
       padding-bottom: 0;
     }
-
     .arch-compare { grid-template-columns: 1fr; }
   }
 </style>
