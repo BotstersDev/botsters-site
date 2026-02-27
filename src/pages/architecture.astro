@@ -1,0 +1,345 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Architecture"
+  description="Brain / Spine / Actuator — the Botsters architecture diagram."
+>
+  <div class="arch-page">
+    <div class="arch-title">
+      <h1>Brain · Spine · Actuator</h1>
+    </div>
+
+    <div class="diagram">
+
+      <!-- BRAIN -->
+      <div class="node node-brain">
+        <div class="node-art">
+          <!-- Cartoon brain SVG -->
+          <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" class="art-svg">
+            <!-- Brain body left lobe -->
+            <ellipse cx="42" cy="52" rx="30" ry="26" fill="#c084fc" opacity="0.9"/>
+            <!-- Brain body right lobe -->
+            <ellipse cx="78" cy="52" rx="30" ry="26" fill="#a855f7" opacity="0.9"/>
+            <!-- Center join -->
+            <rect x="50" y="34" width="20" height="36" fill="#b57bee" rx="4"/>
+            <!-- Top bumps left -->
+            <ellipse cx="35" cy="32" rx="14" ry="12" fill="#c084fc"/>
+            <ellipse cx="60" cy="28" rx="13" ry="11" fill="#b57bee"/>
+            <ellipse cx="85" cy="32" rx="14" ry="12" fill="#a855f7"/>
+            <!-- Wrinkle lines -->
+            <path d="M30 48 Q38 42 46 48" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M32 58 Q40 52 48 58" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M74 48 Q82 42 90 48" stroke="#6d28d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M72 58 Q80 52 88 58" stroke="#6d28d9" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M50 44 Q60 40 70 44" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <!-- Center divide line -->
+            <line x1="60" y1="30" x2="60" y2="72" stroke="#6d28d9" stroke-width="2" stroke-dasharray="3,3"/>
+            <!-- Little stem -->
+            <rect x="54" y="72" width="12" height="8" rx="3" fill="#9333ea"/>
+            <!-- Eyes on the brain (cute!) -->
+            <circle cx="44" cy="55" r="5" fill="white"/>
+            <circle cx="76" cy="55" r="5" fill="white"/>
+            <circle cx="45" cy="56" r="2.5" fill="#1a1a2e"/>
+            <circle cx="77" cy="56" r="2.5" fill="#1a1a2e"/>
+            <circle cx="45.8" cy="55.2" r="0.9" fill="white"/>
+            <circle cx="77.8" cy="55.2" r="0.9" fill="white"/>
+          </svg>
+        </div>
+        <div class="node-label">Brain</div>
+        <div class="node-sub">decides</div>
+      </div>
+
+      <!-- WS line Brain → Spine -->
+      <div class="connector connector-v">
+        <svg viewBox="0 0 40 80" xmlns="http://www.w3.org/2000/svg" class="ws-svg">
+          <line x1="20" y1="4" x2="20" y2="76" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+          <polygon points="12,68 20,80 28,68" fill="#ff6b35"/>
+        </svg>
+      </div>
+
+      <!-- SPINE -->
+      <div class="node node-spine">
+        <div class="node-art">
+          <!-- Cartoon spine SVG -->
+          <svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg" class="art-svg art-svg-tall">
+            <!-- Vertebrae stack -->
+            <!-- Each vertebra: rounded rect with little side nubs -->
+            <!-- v1 -->
+            <rect x="38" y="8" width="44" height="16" rx="6" fill="#fb923c"/>
+            <ellipse cx="28" cy="16" rx="11" ry="7" fill="#f97316"/>
+            <ellipse cx="92" cy="16" rx="11" ry="7" fill="#f97316"/>
+            <!-- v2 -->
+            <rect x="38" y="30" width="44" height="16" rx="6" fill="#fb923c"/>
+            <ellipse cx="28" cy="38" rx="11" ry="7" fill="#f97316"/>
+            <ellipse cx="92" cy="38" rx="11" ry="7" fill="#f97316"/>
+            <!-- v3 -->
+            <rect x="38" y="52" width="44" height="16" rx="6" fill="#fb923c"/>
+            <ellipse cx="28" cy="60" rx="11" ry="7" fill="#f97316"/>
+            <ellipse cx="92" cy="60" rx="11" ry="7" fill="#f97316"/>
+            <!-- v4 -->
+            <rect x="38" y="74" width="44" height="16" rx="6" fill="#fb923c"/>
+            <ellipse cx="28" cy="82" rx="11" ry="7" fill="#f97316"/>
+            <ellipse cx="92" cy="82" rx="11" ry="7" fill="#f97316"/>
+            <!-- v5 -->
+            <rect x="38" y="96" width="44" height="16" rx="6" fill="#fb923c"/>
+            <ellipse cx="28" cy="104" rx="11" ry="7" fill="#f97316"/>
+            <ellipse cx="92" cy="104" rx="11" ry="7" fill="#f97316"/>
+            <!-- connecting channel (spinal cord) -->
+            <rect x="53" y="8" width="14" height="104" rx="4" fill="#fed7aa" opacity="0.5"/>
+            <!-- little dots for the cord -->
+            <circle cx="60" cy="24" r="3" fill="#ffedd5"/>
+            <circle cx="60" cy="46" r="3" fill="#ffedd5"/>
+            <circle cx="60" cy="68" r="3" fill="#ffedd5"/>
+            <circle cx="60" cy="90" r="3" fill="#ffedd5"/>
+
+            <!-- SAFE / secrets vault embedded -->
+            <g transform="translate(28, 118)">
+              <!-- safe body -->
+              <rect x="0" y="0" width="64" height="52" rx="6" fill="#1e293b" stroke="#ff6b35" stroke-width="2"/>
+              <!-- safe door -->
+              <rect x="6" y="5" width="52" height="42" rx="4" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+              <!-- dial -->
+              <circle cx="32" cy="26" r="12" fill="#1e293b" stroke="#ff6b35" stroke-width="2"/>
+              <circle cx="32" cy="26" r="7" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+              <line x1="32" y1="20" x2="32" y2="15" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+              <!-- handle -->
+              <rect x="46" y="22" width="6" height="8" rx="2" fill="#ff6b35"/>
+              <!-- hinges -->
+              <rect x="6" y="9" width="4" height="7" rx="1" fill="#334155"/>
+              <rect x="6" y="36" width="4" height="7" rx="1" fill="#334155"/>
+              <!-- keyhole -->
+              <circle cx="32" cy="43" r="2.5" fill="#ff6b35" opacity="0.8"/>
+            </g>
+          </svg>
+        </div>
+        <div class="node-label">Spine</div>
+        <div class="node-sub">mediates · holds secrets</div>
+      </div>
+
+      <!-- WS line Spine → Actuator -->
+      <div class="connector connector-v">
+        <svg viewBox="0 0 40 80" xmlns="http://www.w3.org/2000/svg" class="ws-svg">
+          <line x1="20" y1="4" x2="20" y2="76" stroke="#ff6b35" stroke-width="3" stroke-dasharray="8,5"/>
+          <polygon points="12,68 20,80 28,68" fill="#ff6b35"/>
+        </svg>
+      </div>
+
+      <!-- ACTUATOR -->
+      <div class="node node-actuator">
+        <div class="node-art">
+          <!-- Robot claw hands with eyes SVG -->
+          <svg viewBox="0 0 160 130" xmlns="http://www.w3.org/2000/svg" class="art-svg art-svg-wide">
+
+            <!-- LEFT CLAW ARM -->
+            <g>
+              <!-- upper arm -->
+              <rect x="14" y="8" width="18" height="42" rx="7" fill="#64748b"/>
+              <!-- elbow joint -->
+              <circle cx="23" cy="52" r="9" fill="#475569"/>
+              <!-- forearm -->
+              <rect x="8" y="58" width="16" height="32" rx="6" fill="#64748b" transform="rotate(-15 16 74)"/>
+              <!-- claw base -->
+              <ellipse cx="18" cy="92" rx="14" ry="9" fill="#334155" transform="rotate(-15 18 92)"/>
+              <!-- fingers -->
+              <rect x="4" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(-25 8 97)"/>
+              <rect x="14" y="88" width="8" height="20" rx="4" fill="#475569" transform="rotate(-10 18 98)"/>
+              <rect x="22" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(10 26 97)"/>
+            </g>
+
+            <!-- RIGHT CLAW ARM (mirror) -->
+            <g>
+              <rect x="128" y="8" width="18" height="42" rx="7" fill="#64748b"/>
+              <circle cx="137" cy="52" r="9" fill="#475569"/>
+              <rect x="136" y="58" width="16" height="32" rx="6" fill="#64748b" transform="rotate(15 144 74)"/>
+              <ellipse cx="142" cy="92" rx="14" ry="9" fill="#334155" transform="rotate(15 142 92)"/>
+              <!-- fingers -->
+              <rect x="148" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(25 152 97)"/>
+              <rect x="138" y="88" width="8" height="20" rx="4" fill="#475569" transform="rotate(10 142 98)"/>
+              <rect x="130" y="86" width="8" height="22" rx="4" fill="#475569" transform="rotate(-10 134 97)"/>
+            </g>
+
+            <!-- ROBOT BODY / TORSO (center) -->
+            <rect x="44" y="4" width="72" height="90" rx="14" fill="#334155" stroke="#475569" stroke-width="2"/>
+            <!-- chest panel -->
+            <rect x="54" y="18" width="52" height="52" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+
+            <!-- BIG EYES (the cute part) -->
+            <!-- left eye -->
+            <circle cx="70" cy="38" r="14" fill="white"/>
+            <circle cx="70" cy="38" r="9" fill="#00ff88"/>
+            <circle cx="70" cy="38" r="5" fill="#0a0a0a"/>
+            <circle cx="72.5" cy="35.5" r="2" fill="white"/>
+            <!-- right eye -->
+            <circle cx="90" cy="38" r="14" fill="white"/>
+            <circle cx="90" cy="38" r="9" fill="#00ff88"/>
+            <circle cx="90" cy="38" r="5" fill="#0a0a0a"/>
+            <circle cx="92.5" cy="35.5" r="2" fill="white"/>
+
+            <!-- mouth / speaker grille -->
+            <rect x="62" y="58" width="36" height="8" rx="4" fill="#0f172a"/>
+            <rect x="65" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+            <rect x="72" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+            <rect x="79" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+            <rect x="86" y="60" width="4" height="4" rx="1" fill="#00ff88" opacity="0.7"/>
+
+            <!-- chest indicator light -->
+            <circle cx="80" cy="76" r="5" fill="#ff6b35" opacity="0.9"/>
+            <circle cx="80" cy="76" r="3" fill="#ffaa00"/>
+
+            <!-- antenna -->
+            <line x1="80" y1="4" x2="80" y2="-12" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="80" cy="-14" r="5" fill="#00ff88"/>
+
+            <!-- legs stub -->
+            <rect x="56" y="94" width="22" height="18" rx="6" fill="#2d3f52"/>
+            <rect x="82" y="94" width="22" height="18" rx="6" fill="#2d3f52"/>
+            <rect x="54" y="108" width="26" height="12" rx="5" fill="#1e293b"/>
+            <rect x="80" y="108" width="26" height="12" rx="5" fill="#1e293b"/>
+          </svg>
+        </div>
+        <div class="node-label">Actuator</div>
+        <div class="node-sub">executes</div>
+      </div>
+
+    </div>
+
+    <!-- WS legend -->
+    <div class="legend">
+      <svg viewBox="0 0 30 14" xmlns="http://www.w3.org/2000/svg" width="30" height="14">
+        <line x1="2" y1="7" x2="28" y2="7" stroke="#ff6b35" stroke-width="2.5" stroke-dasharray="6,4"/>
+      </svg>
+      <span>WebSocket</span>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .arch-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem 4rem;
+    background: var(--color-bg);
+  }
+
+  .arch-title {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .arch-title h1 {
+    font-size: 2.25rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-amber));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Diagram layout — vertical stack */
+  .diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* Nodes */
+  .node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .node-art {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .art-svg {
+    width: 120px;
+    height: 100px;
+    overflow: visible;
+  }
+
+  .art-svg-tall {
+    width: 120px;
+    height: 190px;
+  }
+
+  .art-svg-wide {
+    width: 160px;
+    height: 130px;
+    overflow: visible;
+  }
+
+  .node-label {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--color-text);
+    letter-spacing: 0.02em;
+  }
+
+  .node-brain .node-label { color: #c084fc; }
+  .node-spine .node-label { color: var(--color-accent); }
+  .node-actuator .node-label { color: var(--color-success); }
+
+  .node-sub {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: -0.5rem;
+  }
+
+  /* Connectors */
+  .connector-v {
+    display: flex;
+    justify-content: center;
+  }
+
+  .ws-svg {
+    width: 40px;
+    height: 80px;
+  }
+
+  /* Legend */
+  .legend {
+    margin-top: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  @media (min-width: 700px) {
+    /* On wider screens, lay out horizontally */
+    .diagram {
+      flex-direction: row;
+      align-items: center;
+      gap: 0;
+    }
+
+    .connector-v {
+      transform: rotate(-90deg);
+    }
+
+    .node {
+      min-width: 180px;
+    }
+
+    .arch-title h1 {
+      font-size: 3rem;
+    }
+  }
+</style>
