@@ -56,13 +56,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <div class="evidence-icon">&#128172;</div>
             <div class="evidence-body">
               <blockquote>
-                "Giving an AI Root Access to your entire life"
+                "like I was defusing a bomb"
               </blockquote>
               <div class="quote-attribution">
                 <strong>Summer Yue</strong>, Director of Alignment, Meta AI Security &amp; Safety
               </div>
               <div class="quote-detail">
-                &mdash; had to physically run to her Mac mini <em>"like I was defusing a bomb"</em>
+                &mdash; on having to physically run to her Mac mini to shut down her OpenClaw agent
+              </div>
+              <div class="quote-context">
+                The broader concern &mdash; that AI agents have root access to everything &mdash; has been echoed widely across the community.
               </div>
             </div>
           </div>
@@ -430,6 +433,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .quote-detail {
     font-size: 0.85rem;
     color: var(--color-text-muted);
+  }
+
+  .quote-context {
+    font-size: 0.8rem;
+    color: var(--color-text-dim, rgba(255,255,255,0.35));
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-subtle);
+    font-style: italic;
   }
 
   /* Solution slide */
