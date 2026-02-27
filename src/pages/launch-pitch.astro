@@ -1,0 +1,649 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Launch Pitch"
+  description="The Botsters — 10X the Security of OpenClaw, 10X the Market."
+>
+  <div class="pitch-page">
+
+    <!-- SLIDE 1: Title -->
+    <section class="slide slide-title">
+      <div class="slide-inner">
+        <div class="slide-eyebrow">Presented by</div>
+        <h1 class="presenter">Peter Kwangjun Suk</h1>
+        <div class="title-lockup">
+          <div class="company-name">The Botsters</div>
+          <div class="tagline">10X the Security of OpenClaw, 10X the Market</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="slide-divider"></div>
+
+    <!-- SLIDE 2: The Problem -->
+    <section class="slide slide-problem">
+      <div class="slide-inner">
+        <div class="slide-number">01</div>
+        <div class="slide-label">The Problem</div>
+        <h2>OpenClaw is Insecure.<br/>Very Insecure.</h2>
+
+        <div class="evidence-block">
+          <div class="evidence-item evidence-audit">
+            <div class="evidence-icon">&#128269;</div>
+            <div class="evidence-body">
+              <div class="evidence-source">ClawSecure Large-Scale Security Audit</div>
+              <div class="evidence-date">February 16, 2026</div>
+              <div class="stat-grid">
+                <div class="stat">
+                  <div class="stat-num">41.7%</div>
+                  <div class="stat-label">of skills contained vulnerabilities<br/><span class="stat-note">~1,205+ skills</span></div>
+                </div>
+                <div class="stat stat-danger">
+                  <div class="stat-num">30.6%</div>
+                  <div class="stat-label">High or Critical severity</div>
+                </div>
+                <div class="stat stat-warning">
+                  <div class="stat-num">22.9%</div>
+                  <div class="stat-label">"Sleeper Agent" risk</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="evidence-item evidence-quote">
+            <div class="evidence-icon">&#128172;</div>
+            <div class="evidence-body">
+              <blockquote>
+                "Giving an AI Root Access to your entire life"
+              </blockquote>
+              <div class="quote-attribution">
+                <strong>Summer Yue</strong>, Director of Alignment, Meta AI Security &amp; Safety
+              </div>
+              <div class="quote-detail">
+                &mdash; had to physically run to her Mac mini <em>"like I was defusing a bomb"</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="slide-divider"></div>
+
+    <!-- SLIDE 3: The Solution -->
+    <section class="slide slide-solution">
+      <div class="slide-inner">
+        <div class="slide-number">02</div>
+        <div class="slide-label">The Solution</div>
+        <h2>10X Better Security,<br/>10X Bigger Market</h2>
+
+        <div class="solution-grid">
+          <div class="solution-card">
+            <div class="solution-icon">&#128272;</div>
+            <h3>No Secrets to Steal</h3>
+            <p>Prompt injection and exploits can't steal secrets that were never there. The Brain never holds credentials &mdash; they live exclusively in the customer-controlled Spine.</p>
+          </div>
+          <div class="solution-card">
+            <div class="solution-icon">&#128203;</div>
+            <h3>Ironclad Logging &amp; Control</h3>
+            <p>Every inference call, every actuator action &mdash; logged before it executes. Mandatory by architecture, not configuration.</p>
+          </div>
+          <div class="solution-card">
+            <div class="solution-icon">&#129504;</div>
+            <h3>Can't Think Without Permission</h3>
+            <p>An agent disconnected from the Spine loses the ability to call any model. No rogue inference, no unsanctioned operation.</p>
+          </div>
+          <div class="solution-card">
+            <div class="solution-icon">&#9881;&#65039;</div>
+            <h3>Can't Act Without Approval</h3>
+            <p>Actuator capabilities are scoped and registered. Agents can only do what the Spine permits &mdash; structurally, not instructionally.</p>
+          </div>
+          <div class="solution-card solution-card-wide">
+            <div class="solution-icon">&#127963;&#65039;</div>
+            <h3>The Customer Is in Complete Control</h3>
+            <p>The Spine &mdash; containing all secrets, all logs, all attestation &mdash; is software the customer installs and owns. No third-party visibility into inference traffic. No vendor black box in your data center.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="slide-divider"></div>
+
+    <!-- SLIDE 4: Demo -->
+    <section class="slide slide-demo">
+      <div class="slide-inner">
+        <div class="slide-number">03</div>
+        <div class="slide-label">Demo</div>
+        <h2>Brain &middot; Spine &middot; Actuator<br/>in Action</h2>
+
+        <div class="demo-items">
+          <div class="demo-item">
+            <div class="demo-num">1</div>
+            <div class="demo-body">
+              <div class="demo-title">Secrets Vault</div>
+              <div class="demo-desc">Real credentials stored in the Spine &mdash; the Brain requests by name, never receives the value.</div>
+            </div>
+          </div>
+          <div class="demo-item">
+            <div class="demo-num">2</div>
+            <div class="demo-body">
+              <div class="demo-title">Inference Log</div>
+              <div class="demo-desc">Every model call captured &mdash; agent identity, model, token counts, timestamp. Tamper-resistant.</div>
+            </div>
+          </div>
+          <div class="demo-item">
+            <div class="demo-num">3</div>
+            <div class="demo-body">
+              <div class="demo-title">Actuator Log</div>
+              <div class="demo-desc">Shell commands, file writes, git operations &mdash; all logged before execution.</div>
+            </div>
+          </div>
+          <div class="demo-item">
+            <div class="demo-num">4</div>
+            <div class="demo-body">
+              <div class="demo-title">Safe Mode</div>
+              <div class="demo-desc">Per-agent and system-wide kill switch. Revoke all access &mdash; or just one agent &mdash; in milliseconds.</div>
+            </div>
+          </div>
+          <div class="demo-item">
+            <div class="demo-num">5</div>
+            <div class="demo-body">
+              <div class="demo-title">Actuators on Multiple Machines</div>
+              <div class="demo-desc">One Spine coordinating agents across VPS, MacBook, Mac Mini &mdash; all controlled, all logged.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="slide-divider"></div>
+
+    <!-- SLIDE 5: Traction and Ask -->
+    <section class="slide slide-traction">
+      <div class="slide-inner">
+        <div class="slide-number">04</div>
+        <div class="slide-label">Traction and Ask</div>
+        <h2>Immediate Next Steps</h2>
+
+        <div class="traction-cols">
+          <div class="traction-col">
+            <h3>Go-to-Market</h3>
+            <ul>
+              <li><strong>One-click secure hosting</strong> &mdash; but customer installs their own Spine. Agents can handle deployment for customers.</li>
+              <li><strong>Build Jason Calacanis a custom OpenClaw fork</strong> &mdash; enterprise grade, suitable for the Ultron Project.</li>
+              <li>If he likes it, he gives us a mention.</li>
+            </ul>
+          </div>
+          <div class="traction-col">
+            <h3>Initial Market</h3>
+            <ul>
+              <li><strong>TAM:</strong> Existing and curious OpenClaw users</li>
+              <li>Proves Product-Market Fit with a security-conscious audience</li>
+              <li>OpenClaw fork ensures low-friction adoption</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="slide-divider"></div>
+
+    <!-- SLIDE 6: Real Ask and TAM -->
+    <section class="slide slide-tam">
+      <div class="slide-inner">
+        <div class="slide-number">05</div>
+        <div class="slide-label">Actual Ask and Actual TAM</div>
+        <h2>Real Value Prop<br/>and Eventual Goal</h2>
+
+        <div class="tam-grid">
+          <div class="tam-col">
+            <h3>What We Need</h3>
+            <ul>
+              <li>Resources and connections</li>
+              <li>Prompt injection attack filtering expertise</li>
+              <li>Deep security expertise</li>
+            </ul>
+          </div>
+          <div class="tam-col">
+            <h3>The Real TAM</h3>
+            <ul>
+              <li>Enterprise Sales</li>
+              <li>The ultimate <strong>"Mom Problem" solution</strong> &mdash; AI agents safe enough for anyone to trust</li>
+              <li><strong>Disrupt Upwork / Fiverr with Agents</strong> &mdash; secure, auditable, customer-controlled AI workers</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="closing-statement">
+          <div class="closing-inner">
+            Secure AI agents at enterprise scale &mdash;<br/>
+            built on infrastructure the customer controls.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .pitch-page {
+    background: var(--color-bg);
+  }
+
+  .slide {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 2rem;
+  }
+
+  .slide-inner {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .slide-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,107,53,0.4) 20%, rgba(255,107,53,0.4) 80%, transparent);
+    margin: 0 2rem;
+  }
+
+  .slide-number {
+    font-size: 4rem;
+    font-weight: 900;
+    line-height: 1;
+    color: rgba(255,107,53,0.15);
+    margin-bottom: -1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .slide-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+  }
+
+  .slide h2 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin: 0 0 2.5rem;
+    background: linear-gradient(135deg, var(--color-text) 60%, var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Title slide */
+  .slide-title {
+    text-align: center;
+    background: radial-gradient(ellipse at 50% 60%, rgba(255,107,53,0.07) 0%, transparent 70%);
+  }
+
+  .slide-eyebrow {
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .presenter {
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 700;
+    color: var(--color-text-muted);
+    margin: 0 0 2.5rem;
+  }
+
+  .company-name {
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-amber));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.25rem;
+  }
+
+  .tagline {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  /* Problem slide */
+  .slide-problem {
+    background: radial-gradient(ellipse at 70% 30%, rgba(220,38,38,0.05) 0%, transparent 60%);
+  }
+
+  .evidence-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .evidence-item {
+    display: flex;
+    gap: 1.5rem;
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid var(--border-muted);
+  }
+
+  .evidence-audit {
+    background: rgba(220,38,38,0.04);
+    border-color: rgba(220,38,38,0.2);
+  }
+
+  .evidence-quote {
+    background: var(--color-bg-secondary);
+  }
+
+  .evidence-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 0.2rem;
+  }
+
+  .evidence-body { flex: 1; }
+
+  .evidence-source {
+    font-weight: 700;
+    color: var(--color-text);
+    font-size: 1.05rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .evidence-date {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  .stat {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 10px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .stat-danger { border-color: rgba(220,38,38,0.4); background: rgba(220,38,38,0.08); }
+  .stat-warning { border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.07); }
+
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--color-accent);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+
+  .stat-danger .stat-num { color: #ef4444; }
+  .stat-warning .stat-num { color: var(--color-amber); }
+
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  .stat-note {
+    color: var(--color-text-dim);
+    font-size: 0.72rem;
+  }
+
+  blockquote {
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--color-text);
+    line-height: 1.5;
+    margin: 0 0 1rem;
+    border: none;
+    padding: 0;
+  }
+
+  .quote-attribution {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .quote-detail {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Solution slide */
+  .slide-solution {
+    background: radial-gradient(ellipse at 30% 70%, rgba(255,107,53,0.06) 0%, transparent 60%);
+  }
+
+  .solution-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .solution-card {
+    padding: 1.75rem;
+    border-radius: 14px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--border-muted);
+    transition: border-color 0.2s;
+  }
+
+  .solution-card:hover { border-color: rgba(255,107,53,0.35); }
+
+  .solution-card-wide {
+    grid-column: 1 / -1;
+    background: rgba(255,107,53,0.05);
+    border-color: rgba(255,107,53,0.25);
+  }
+
+  .solution-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    line-height: 1;
+  }
+
+  .solution-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-amber);
+    margin: 0 0 0.6rem;
+  }
+
+  .solution-card-wide h3 {
+    color: var(--color-accent);
+    font-size: 1.1rem;
+  }
+
+  .solution-card p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Demo slide */
+  .slide-demo {
+    background: radial-gradient(ellipse at 60% 40%, rgba(0,255,136,0.04) 0%, transparent 60%);
+  }
+
+  .demo-items {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-muted);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .demo-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-muted);
+    transition: background 0.2s;
+  }
+
+  .demo-item:last-child { border-bottom: none; }
+  .demo-item:hover { background: var(--color-bg-secondary); }
+
+  .demo-num {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: rgba(255,107,53,0.2);
+    min-width: 2.5rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .demo-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.3rem;
+  }
+
+  .demo-desc {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  /* Traction slide */
+  .slide-traction {
+    background: radial-gradient(ellipse at 40% 50%, rgba(192,132,252,0.05) 0%, transparent 60%);
+  }
+
+  .traction-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .traction-col {
+    padding: 2rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--border-muted);
+    border-radius: 14px;
+  }
+
+  .traction-col h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+    margin: 0 0 1.25rem;
+  }
+
+  .traction-col ul, .tam-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .traction-col ul li, .tam-col ul li {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    padding-left: 1.25rem;
+    position: relative;
+  }
+
+  .traction-col ul li::before {
+    content: '\2192';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  .tam-col ul li::before {
+    content: '\2192';
+    position: absolute;
+    left: 0;
+    color: var(--color-amber);
+    font-weight: 700;
+  }
+
+  .traction-col ul li strong, .tam-col ul li strong {
+    color: var(--color-text);
+  }
+
+  /* TAM slide */
+  .slide-tam {
+    background: radial-gradient(ellipse at 50% 50%, rgba(255,107,53,0.07) 0%, transparent 65%);
+  }
+
+  .tam-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .tam-col {
+    padding: 2rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--border-muted);
+    border-radius: 14px;
+  }
+
+  .tam-col h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-amber);
+    margin: 0 0 1.25rem;
+  }
+
+  .closing-statement {
+    text-align: center;
+    padding: 2.5rem;
+    border: 1px solid rgba(255,107,53,0.3);
+    border-radius: 16px;
+    background: rgba(255,107,53,0.05);
+  }
+
+  .closing-inner {
+    font-size: clamp(1rem, 2.5vw, 1.35rem);
+    font-weight: 600;
+    color: var(--color-text);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 640px) {
+    .slide { padding: 4rem 1.25rem; }
+    .stat-grid { grid-template-columns: 1fr; }
+    .solution-grid { grid-template-columns: 1fr; }
+    .solution-card-wide { grid-column: 1; }
+    .traction-cols, .tam-grid { grid-template-columns: 1fr; }
+    .evidence-item { flex-direction: column; gap: 1rem; }
+  }
+</style>
