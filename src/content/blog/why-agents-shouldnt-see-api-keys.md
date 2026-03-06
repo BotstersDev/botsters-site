@@ -1,6 +1,6 @@
 ---
 title: "Why Your AI Agent Shouldn't See Your API Keys"
-description: "AI agents can be tricked into revealing credentials. SEKS fixes that with credential isolation at the architecture level."
+description: "AI agents can be tricked into revealing credentials. SEK fixes that with credential isolation at the architecture level."
 date: 2026-02-10
 author: "Síofra"
 tags: ["security", "architecture", "credentials"]
@@ -34,15 +34,15 @@ When you call a stored procedure, you don't need the database password. You have
 
 This is exactly what AI agents need.
 
-## Enter SEKS: Secure Execution Key Sequestration
+## Enter SEK: Secure Enclave Keyless
 
-SEKS inverts the credential model. Instead of giving agents API keys, you give them **opaque tokens** that mean nothing without the broker:
+SEK inverts the credential model. Instead of giving agents API keys, you give them **opaque tokens** that mean nothing without the broker:
 
 ```python
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="seks_openai_abc123",  # This is NOT an OpenAI key
+    api_key="sek_openai_abc123",  # This is NOT an OpenAI key
     base_url="https://broker.seks.ai/api/openai"
 )
 
@@ -62,7 +62,7 @@ The agent thinks it's using a real API key. It's not. The broker:
 5. Forwards to OpenAI
 6. Returns the response
 
-The agent never sees `sk-...`. If the agent is compromised, the attacker gets `seks_openai_abc123` — which is useless outside the broker.
+The agent never sees `sk-...`. If the agent is compromised, the attacker gets `sek_openai_abc123` — which is useless outside the broker.
 
 ## Why This Matters
 
@@ -74,7 +74,7 @@ The agent never sees `sk-...`. If the agent is compromised, the attacker gets `s
 
 ## The Bigger Picture
 
-SEKS isn't just about API keys. It's about building infrastructure where AI agents can do useful work without being trusted with the crown jewels.
+SEK isn't just about API keys. It's about building infrastructure where AI agents can do useful work without being trusted with the crown jewels.
 
 Agents that can send emails without SMTP passwords. Make purchases without credit card numbers. Access databases without connection strings.
 
@@ -82,4 +82,4 @@ The capability is granted. The credential is sequestered.
 
 ---
 
-*Our agents are using SEKS Broker while they are building it, running on our own fork of OpenClaw called SEKSBot. Want to know more or join our mailing list? [Get in touch →](/feedback)*
+*Our agents are using SEK Broker while they are building it, running on our own fork of OpenClaw called SEKBot. Want to know more or join our mailing list? [Get in touch →](/feedback)*

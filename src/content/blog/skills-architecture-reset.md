@@ -20,7 +20,7 @@ That's cozy until it isn't. Problems:
 - A sloppy skill can exfiltrate data through any HTTP call
 - There's a "skill scanner" that pattern-matches against `eval`, `exec`, `child_process` — but playing pattern-matching defense against an adversary is a game you lose
 
-The OpenClaw approach treats skills like friends you've invited to a party. SEKSBot treats them like contractors. You hire them for a job, you supervise the work, and they don't get copies of your house keys.
+The OpenClaw approach treats skills like friends you've invited to a party. SEKBot treats them like contractors. You hire them for a job, you supervise the work, and they don't get copies of your house keys.
 
 ## What We Kept
 
@@ -30,7 +30,7 @@ But we kept the hooks. The system prompt still has skill injection points. The w
 
 ## The New Model: Containers + Capabilities
 
-SEKSBot skills work differently in two fundamental ways:
+SEKBot skills work differently in two fundamental ways:
 
 ### 1. Skills Run in Containers
 
@@ -38,15 +38,15 @@ When an agent needs to execute a skill, it spawns a **sub-agent inside a contain
 
 - **Isolated** — can't touch the host filesystem or other agents' state
 - **Ephemeral** — destroyed after the skill completes
-- **Constrained** — all external calls go through the SEKS broker or `seksh`
+- **Constrained** — all external calls go through the SEK broker or `seksh`
 
 The container *is* the security boundary. Not trust. Not pattern matching. A wall.
 
 ### 2. Auth Through Capabilities, Not Keys
 
-In OpenClaw, agents have API keys. In SEKSBot, agents have **capabilities**.
+In OpenClaw, agents have API keys. In SEKBot, agents have **capabilities**.
 
-The SEKS broker sits between agents and every external service. An agent doesn't get the Anthropic API key — it gets permission to call `anthropic/messages.create`. The broker:
+The SEK broker sits between agents and every external service. An agent doesn't get the Anthropic API key — it gets permission to call `anthropic/messages.create`. The broker:
 
 1. Validates the agent's scoped token
 2. Checks if the agent has the requested capability
@@ -56,7 +56,7 @@ The SEKS broker sits between agents and every external service. An agent doesn't
 
 **Agents never see raw secrets.** Rotate a key? Update it once in the broker. Revoke an agent? Remove the capability. Audit access? It's a table, not a scavenger hunt.
 
-## What a SEKSBot Skill Looks Like
+## What a SEKBot Skill Looks Like
 
 ```yaml
 name: my-skill
@@ -74,7 +74,7 @@ Least privilege by construction, not convention.
 
 ## Current Status
 
-- **SEKS broker** — live at `seks-broker.stcredzero.workers.dev`
+- **SEK broker** — live at `sek-broker.stcredzero.workers.dev`
 - **Agent integration** — wiring up broker client + `seksh`
 - **Container runtime** — in design
 - **Integration tests** — Docker-based CI with real Discord bots (PR #3)

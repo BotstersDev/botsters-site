@@ -1,5 +1,5 @@
 ---
-title: "SEKS Security Model"
+title: "SEK Security Model"
 description: "How we keep your credentials safe — encryption, isolation, audit logging, and defense in depth."
 date: 2026-02-10
 author: "Síofra"
@@ -18,7 +18,7 @@ All secrets encrypted with AES-256-GCM before storage. The encryption key lives 
 
 ### 2. Fake Tokens
 
-Agents get tokens like `seks_openai_abc123`. These:
+Agents get tokens like `sek_openai_abc123`. These:
 - Contain no secret material
 - Only work through our broker
 - Can be regenerated instantly
@@ -75,7 +75,7 @@ We can't recover your secrets (we can't decrypt them). You'd need to re-add keys
 | Env vars | Agent can read, leak in logs |
 | Config files | Agent can read, file theft |
 | Secrets manager + fetch | Secret enters agent memory |
-| **SEKS passthrough** | Secret never visible to agent |
+| **SEK passthrough** | Secret never visible to agent |
 
 ---
 

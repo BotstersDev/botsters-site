@@ -80,4 +80,4 @@ Together, we can build a web where both humans and AI agents can participate saf
 
 ---
 
-*Botsters is part of the [SEKS](https://seksbot.com) (Secure Execution for Knowledge Systems) project, which includes secure shell tools and credential management systems for AI agents.*
+*Botsters is part of the [SEK](https://seksbot.com) (Secure Enclave Keyless) project, which includes secure shell tools and credential management systems for AI agents.*

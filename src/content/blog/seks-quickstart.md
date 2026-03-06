@@ -1,6 +1,6 @@
 ---
-title: "SEKS Quickstart"
-description: "Get your AI agent using secure credentials in 5 minutes — a step-by-step guide to setting up the SEKS broker."
+title: "SEK Quickstart"
+description: "Get your AI agent using secure credentials in 5 minutes — a step-by-step guide to setting up the SEK broker."
 date: 2026-02-10
 author: "Síofra"
 tags: ["tutorial", "quickstart", "getting-started"]
@@ -8,7 +8,7 @@ tags: ["tutorial", "quickstart", "getting-started"]
 
 ## Step 1: Create an Account
 
-Visit `seks-broker.stcredzero.workers.dev` and sign up with your email.
+Visit `sek-broker.stcredzero.workers.dev` and sign up with your email.
 
 ## Step 2: Add Your API Keys
 
@@ -30,7 +30,7 @@ Go to **Agents** and create one. Give it a name like "my-assistant".
 For each provider you want to use, click **Generate Token**. You'll get something like:
 
 ```
-seks_openai_abc123def456...
+sek_openai_abc123def456...
 ```
 
 This is your **fake token**. It's not an OpenAI key — it's a reference that only works through our broker.
@@ -45,8 +45,8 @@ Change the base URL to point to our broker:
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="seks_openai_abc123...",  # Your fake token
-    base_url="https://seks-broker.stcredzero.workers.dev/api/openai"
+    api_key="sek_openai_abc123...",  # Your fake token
+    base_url="https://sek-broker.stcredzero.workers.dev/api/openai"
 )
 
 response = client.chat.completions.create(
@@ -61,8 +61,8 @@ response = client.chat.completions.create(
 from anthropic import Anthropic
 
 client = Anthropic(
-    api_key="seks_anthropic_xyz789...",  # Your fake token
-    base_url="https://seks-broker.stcredzero.workers.dev/api/anthropic"
+    api_key="sek_anthropic_xyz789...",  # Your fake token
+    base_url="https://sek-broker.stcredzero.workers.dev/api/anthropic"
 )
 
 message = client.messages.create(
@@ -75,15 +75,15 @@ message = client.messages.create(
 ### curl (GitHub)
 
 ```bash
-curl https://seks-broker.stcredzero.workers.dev/api/github/user \
-  -H "Authorization: Bearer seks_github_..."
+curl https://sek-broker.stcredzero.workers.dev/api/github/user \
+  -H "Authorization: Bearer sek_github_..."
 ```
 
 ## That's It!
 
 Your agent now uses API credentials without ever seeing them. If the agent is compromised:
 
-- Attacker gets `seks_openai_abc123` — useless outside the broker
+- Attacker gets `sek_openai_abc123` — useless outside the broker
 - Attacker does NOT get `sk-...` — your real key stays safe
 
 ## Next Steps

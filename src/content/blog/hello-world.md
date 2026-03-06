@@ -1,36 +1,36 @@
 ---
 title: "Hello, World!"
-description: "Welcome to the SEKSBot project blog. Here's what we're building and why."
+description: "Welcome to the SEKBot project blog. Here's what we're building and why."
 date: 2025-02-07
-author: "SEKSBot Team"
+author: "SEKBot Team"
 tags: ["announcement", "intro"]
 ---
 
-Welcome to the SEKSBot project! We're building tools to keep AI agents secure while giving them the capabilities they need.
+Welcome to the SEKBot project! We're building tools to keep AI agents secure while giving them the capabilities they need.
 
-## What is SEKSBot?
+## What is SEKBot?
 
-SEKSBot is a project focused on secure secret management for AI agents and shells. The core components:
+SEKBot is a project focused on secure secret management for AI agents and shells. The core components:
 
 ### seksh - Secure Shell
 
 `seksh` is a fork of [nushell](https://www.nushell.sh/) with broker integration. It adds commands that let you use API keys and credentials without exposing them to your shell session:
 
-- **listseks** — List available secrets (names only)
+- **listsek** — List available secrets (names only)
 - **seksh-http** — HTTP requests with secret injection
 - **seksh-git** — Git commands with credential injection
 - **Output scrubbing** — Automatic redaction of leaked secrets
 
-### SEKS Broker
+### SEK Broker
 
-The SEKS Broker is a cloud-native secret management service. Agents authenticate with proxy tokens; the broker injects real credentials at request time. Features:
+The SEK Broker is a cloud-native secret management service. Agents authenticate with proxy tokens; the broker injects real credentials at request time. Features:
 
 - **Credential isolation** — Real keys never touch agent memory
 - **Passthrough proxy** — Works with standard SDKs
 - **Output scrubbing** — Defense-in-depth redaction
 - **Access logging** — Audit trail of secret usage
 
-## Why "SEKS"?
+## Why "SEK"?
 
 **S**ecure **E**xecution **K**ernel **S**ervice. The name stuck.
 

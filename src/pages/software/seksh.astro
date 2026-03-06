@@ -38,7 +38,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           only secret names.
         </p>
         <pre><code># List available secrets (names only)
-> listseks
+> listsek
 ╭───┬──────────────────────────╮
 │ 0 │ GITHUB_TOKEN             │
 │ 1 │ OPENAI_API_KEY           │
@@ -82,7 +82,7 @@ Token: [REDACTED]   # Was: ghp_xxxx...</code></pre>
                       │
                       ▼
 ┌─────────────────────────────────────────────┐
-│              SEKS Broker                    │
+│              SEK Broker                    │
 │   1. Receives request with secret NAME      │
 │   2. Fetches actual secret value            │
 │   3. Injects into HTTP headers              │
@@ -101,12 +101,12 @@ Token: [REDACTED]   # Was: ghp_xxxx...</code></pre>
         <pre><code># Clone and build from source
 git clone https://github.com/SEKSBot/seksh
 cd seksh
-git checkout seks-shell
+git checkout sek-shell
 cargo build --release
 
 # Configure broker connection
-export SEKS_BROKER_URL="https://your-broker.example.com"
-export SEKS_AGENT_TOKEN="seks_agent_..."
+export SEK_BROKER_URL="https://your-broker.example.com"
+export SEK_AGENT_TOKEN="sek_agent_..."
 
 # Run seksh
 ./target/release/nu</code></pre>

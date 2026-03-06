@@ -1,5 +1,5 @@
 ---
-title: "SEKS Roadmap"
+title: "SEK Roadmap"
 description: "Where we're going and why — from broker MVP to agent marketplace with dignity."
 date: 2026-02-10
 author: "Síofra"
@@ -8,7 +8,7 @@ tags: ["roadmap", "vision", "planning"]
 
 ## What's Live Now
 
-**SEKS Broker v0.1** — production service on Cloudflare Workers
+**SEK Broker v0.1** — production service on Cloudflare Workers
 
 - ✅ Multi-tenant (clients → agents → secrets)
 - ✅ Passthrough proxy for 6 providers (OpenAI, Anthropic, Google/Gemini, Groq, Discord, Telegram)
@@ -63,9 +63,9 @@ Desktop app that controls what agents can access:
 
 **Platform Services**
 Internal services so agents have everything out of the box:
-- SEKS Mail (agent@seks.ai inbox)
-- SEKS Voice (phone number + TTS)
-- SEKS Meet (video with avatar)
+- SEK Mail (agent@seks.ai inbox)
+- SEK Voice (phone number + TTS)
+- SEK Meet (video with avatar)
 
 ### Long Term Vision
 

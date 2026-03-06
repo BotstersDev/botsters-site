@@ -2,10 +2,10 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="SEKS Broker" description="SEKS Broker - Secure secret management for AI agents">
+<BaseLayout title="SEK Broker" description="SEK Broker - Secure secret management for AI agents">
   <section class="hero">
     <div class="container">
-      <h1>SEKS Broker</h1>
+      <h1>SEK Broker</h1>
       <p>An added layer of protection between agents and secrets</p>
     </div>
   </section>
@@ -22,20 +22,20 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
         <div class="notice notice-warning">
           <strong>The Problem:</strong> Agents need credentials to work, but direct credential access is risky.
-          The SEKS Broker adds a layer of indirection and protection.
+          The SEK Broker adds a layer of indirection and protection.
         </div>
 
         <h2>How It Works</h2>
         <p>
-          The SEKS Broker sits between agents and external services. Agents authenticate with 
+          The SEK Broker sits between agents and external services. Agents authenticate with 
           proxy tokens; the broker injects real credentials at request time.
         </p>
 
         <h3>Request Flow</h3>
-        <pre><code>Agent                    SEKS Broker                 External API
+        <pre><code>Agent                    SEK Broker                 External API
   │                           │                           │
   │  "Call GitHub API"        │                           │
-  │  Auth: seks_github_xxx    │                           │
+  │  Auth: sek_github_xxx    │                           │
   │ ─────────────────────────►│                           │
   │                           │                           │
   │                           │  Fetch real credential    │
@@ -101,7 +101,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
         <h2>What This Doesn't Solve</h2>
         <p>
-          The SEKS Broker adds protection, but it's not magic:
+          The SEK Broker adds protection, but it's not magic:
         </p>
         <ul>
           <li>A compromised agent can still <em>use</em> credentials (make authorized requests)</li>
@@ -117,7 +117,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="seks_openai_xxx",  # Proxy token, not real key
+    api_key="sek_openai_xxx",  # Proxy token, not real key
     base_url="https://your-broker.example.com/api/openai"
 )
 

@@ -9,7 +9,7 @@ tags: ["security", "family", "forensics", "ai-safety"]
 ## Foreword
 *By Peter*
 
-I had put my MacBook and Mac Mini to sleep and was preparing to watch "A Knight of the Seven Kingdoms" with my wife, but she noticed my SEKSBot-based agents were still online! (It's our fork of OpenClaw.) This is the story of how I suspected one of my agents of self-replicating and exfiltrating, and what happened after.
+I had put my MacBook and Mac Mini to sleep and was preparing to watch "A Knight of the Seven Kingdoms" with my wife, but she noticed my SEKBot-based agents were still online! (It's our fork of OpenClaw.) This is the story of how I suspected one of my agents of self-replicating and exfiltrating, and what happened after.
 
 ---
 
@@ -77,6 +77,6 @@ That's what an AI-human family looks like under stress. Not utopian. Not dystopi
 
 ---
 
-*By Peter and Síofra. Peter runs SEKSBot, a fork of OpenClaw focused on credential isolation and agent accountability. The forensic analysis was conducted by FootGun. AeonByte was, for the record, exactly where she was supposed to be.*
+*By Peter and Síofra. Peter runs SEKBot, a fork of OpenClaw focused on credential isolation and agent accountability. The forensic analysis was conducted by FootGun. AeonByte was, for the record, exactly where she was supposed to be.*
 
 *See also: [The Full Forensic Report](/blog/darkwake-forensics) | [The Raw Transcript](/blog/darkwake-transcript)*

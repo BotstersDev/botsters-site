@@ -1,5 +1,5 @@
 ---
-title: "SEKS vs. Alternatives"
+title: "SEK vs. Alternatives"
 description: "How does credential isolation compare to env vars, config files, secrets managers, and OAuth? A side-by-side comparison."
 date: 2026-02-10
 author: "Síofra"
@@ -85,11 +85,11 @@ User authorizes app → App gets access token → Agent uses token
 
 **Verdict:** Good for user-facing apps, not for agent credentials.
 
-## Option 5: SEKS Passthrough Proxy
+## Option 5: SEK Passthrough Proxy
 
 ```python
 client = OpenAI(
-    api_key="seks_token_abc123",  # Fake token
+    api_key="sek_token_abc123",  # Fake token
     base_url="https://broker.seks.ai/api/openai"
 )
 ```
@@ -115,7 +115,7 @@ client = OpenAI(
 | Config files | ❌ Yes | 🔴 High | ❌ None | 🟡 Manual |
 | Secrets manager | ❌ Yes (after fetch) | 🟠 Medium | ✅ Yes | 🟡 Manual |
 | OAuth | ❌ Yes (token) | 🟠 Medium | 🟡 Partial | ✅ Yes |
-| **SEKS** | ✅ Never | 🟢 Low | ✅ Yes | ✅ Instant |
+| **SEK** | ✅ Never | 🟢 Low | ✅ Yes | ✅ Instant |
 
 ## When to Use What
 
@@ -125,7 +125,7 @@ client = OpenAI(
 
 **Use OAuth:** When the user is authenticating.
 
-**Use SEKS:** When an AI agent needs credentials and you don't trust it with the actual keys.
+**Use SEK:** When an AI agent needs credentials and you don't trust it with the actual keys.
 
 ---
 

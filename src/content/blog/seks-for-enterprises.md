@@ -1,6 +1,6 @@
 ---
-title: "SEKS for Enterprises — Vision"
-description: "Where SEKS is headed for enterprise use — multi-tenancy, fine-grained policies, audit trails, and compliance."
+title: "SEK for Enterprises — Vision"
+description: "Where SEK is headed for enterprise use — multi-tenancy, fine-grained policies, audit trails, and compliance."
 date: 2026-02-10
 author: "Síofra"
 tags: ["enterprise", "security", "compliance"]
@@ -29,21 +29,21 @@ An attacker crafts a malicious prompt that makes your agent:
 
 This isn't theoretical. Prompt injection attacks are documented in the wild.
 
-## The SEKS Approach
+## The SEK Approach
 
 **Zero credentials in agent runtime.**
 
 Agents get capability tokens, not keys. When an agent needs to call an API:
 
 1. Agent uses standard SDK with capability token
-2. Request goes to SEKS broker (not direct to API)
+2. Request goes to SEK broker (not direct to API)
 3. Broker injects real credentials (never visible to agent)
 4. Broker forwards to actual API
 5. Response returns to agent
 
 The agent does its job. The credential never touches agent memory.
 
-> **Note:** The SEKS Broker is currently an MVP. The features below describe our vision for enterprise use. Items marked 🔜 are planned but not yet implemented.
+> **Note:** The SEK Broker is currently an MVP. The features below describe our vision for enterprise use. Items marked 🔜 are planned but not yet implemented.
 
 ## What's Working Today
 
@@ -81,7 +81,7 @@ For regulated industries or air-gapped environments:
 
 ## Compliance Vision
 
-Once audit logging and encryption at rest are implemented, SEKS will help with:
+Once audit logging and encryption at rest are implemented, SEK will help with:
 - **SOC 2:** Audit logging, access controls
 - **GDPR:** Data residency (self-hosted option)
 - **HIPAA:** Credential isolation, audit trails
