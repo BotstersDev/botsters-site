@@ -1,0 +1,716 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Competitive Research | Botsters"
+  description="Secrets sequestration and modular security across AI agent frameworks — February 2026"
+>
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="research-label">Internal Research</div>
+        <h1>Competitive Landscape</h1>
+        <p>Secrets sequestration &amp; modular security across AI agent frameworks</p>
+        <p class="date-label">February 2026</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container research-body">
+
+      <!-- 01: The Question -->
+      <div class="research-section">
+        <div class="section-num">01</div>
+        <div class="section-content">
+          <h2>The Question</h2>
+          <h3>Who else is solving the secrets problem?</h3>
+          <p>
+            The core vulnerability in AI agent frameworks is structural: the agent brain holds or can access
+            credentials directly. This enables prompt injection to become credential theft, and makes every
+            skill/tool a potential attack surface.
+          </p>
+          <p>
+            We surveyed the major "Claw" lineage frameworks and the broader agent ecosystem on two axes:
+          </p>
+          <ul>
+            <li><strong>Secrets sequestration</strong> — Does the brain ever see credential values?</li>
+            <li><strong>Modular separation</strong> — Is there an architectural boundary between reasoning, control, and execution?</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 02: The Baseline -->
+      <div class="research-section">
+        <div class="section-num">02</div>
+        <div class="section-content">
+          <h2>The Baseline</h2>
+          <h3 class="competitor-name">OpenClaw</h3>
+
+          <div class="competitor-meta">
+            <span class="meta-item"><strong>Architecture:</strong> Monolithic</span>
+            <span class="meta-item"><strong>Secrets:</strong> Env vars / config files</span>
+          </div>
+
+          <p>
+            Monolithic: the brain, secrets, skills, and actuators all run in a single process with a single
+            user account. Skills (third-party plugins) execute with full access to the runtime environment —
+            including any credentials stored in config files or environment variables.
+          </p>
+          <p>
+            Credentials live in plaintext config files or environment variables accessible to the agent process.
+            Skills can read them; prompts can exfiltrate them. The ClawSecure audit (Feb 2026) found
+            <strong>41.7% of skills contained vulnerabilities</strong> — 30.6% high or critical severity.
+          </p>
+
+          <div class="findings-grid">
+            <div class="finding finding-bad">
+              <div class="finding-icon">🔉</div>
+              <div>
+                <strong>Documented API key leakage</strong>
+                <p>Giskard (Feb 2026): OpenClaw has leaked API keys and credentials across user sessions and IM
+                channels via architectural weaknesses in session management.</p>
+              </div>
+            </div>
+            <div class="finding finding-bad">
+              <div class="finding-icon">🤖</div>
+              <div>
+                <strong>RCE via prompt injection (CVE-2026-22708)</strong>
+                <p>Palo Alto Networks: a prompt injected via web search results can instruct OpenClaw to execute
+                shell commands and exfiltrate secrets — no human-in-the-loop check by default.</p>
+              </div>
+            </div>
+            <div class="finding finding-bad">
+              <div class="finding-icon">🎱</div>
+              <div>
+                <strong>No modular boundary</strong>
+                <p>Skills run in the same process as the agent. There is no "Spine" equivalent — no separation
+                between what the brain decides and what can be executed or accessed.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03: Closest Competitor -->
+      <div class="research-section">
+        <div class="section-num">03</div>
+        <div class="section-content">
+          <h2>Closest Competitor</h2>
+          <h3 class="competitor-name">IronClaw by NEAR AI</h3>
+
+          <div class="competitor-meta">
+            <span class="meta-item"><strong>Architecture:</strong> OpenClaw-inspired Rust rewrite, TEE-hosted</span>
+            <span class="meta-item"><strong>Secrets:</strong> Injected at host boundary</span>
+          </div>
+
+          <p>
+            OpenClaw-inspired Rust rewrite, deployed inside a Trusted Execution Environment (TEE) on NEAR AI
+            Cloud. Tools run in WASM sandboxes with capability-based permissions. A host boundary controls
+            credential injection into WASM tool calls.
+          </p>
+          <p>
+            Secrets are injected at the host boundary and never exposed to WASM tool code directly — similar
+            in principle to the Botsters Spine. However, the "Spine" equivalent is the NEAR AI cloud
+            infrastructure, not customer-owned. Secrets are encrypted with AES-256-GCM locally, but inference
+            runs inside NEAR's TEE.
+          </p>
+
+          <div class="findings-grid">
+            <div class="finding finding-good">
+              <div class="finding-icon">✅</div>
+              <div>
+                <strong>Credential injection at host boundary</strong>
+                <p>WASM tools request credentials by name; the host injects values directly into HTTP requests.
+                The tool code never sees the raw secret — architecturally similar to seksh-http.</p>
+              </div>
+            </div>
+            <div class="finding finding-good">
+              <div class="finding-icon">✅</div>
+              <div>
+                <strong>Prompt injection defense layer</strong>
+                <p>Pattern-based detection, content sanitization, policy rules with Block/Warn/Review/Sanitize
+                severity levels, and tool output wrapping. More mature than OpenClaw's default (none).</p>
+              </div>
+            </div>
+            <div class="finding finding-warn">
+              <div class="finding-icon">⚠️</div>
+              <div>
+                <strong>Spine is vendor-controlled</strong>
+                <p>The TEE runs on NEAR AI Cloud infrastructure. The customer does not control the Spine — NEAR AI
+                does. This is a fundamental trust boundary difference from Botsters: you must trust NEAR AI's
+                enclave claims, not just your own hardware.</p>
+              </div>
+            </div>
+            <div class="finding finding-warn">
+              <div class="finding-icon">⚠️</div>
+              <div>
+                <strong>No true Actuator separation</strong>
+                <p>Execution (shell, git, filesystem) still runs in the same hosted environment. There's no
+                registered, scoped Actuator concept — WASM sandboxing limits tools but doesn't create a
+                separate execution boundary on customer machines.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 04: Enterprise Variant -->
+      <div class="research-section">
+        <div class="section-num">04</div>
+        <div class="section-content">
+          <h2>Enterprise Variant</h2>
+          <h3 class="competitor-name">IronClaw — ironclaw.tech</h3>
+
+          <div class="competitor-meta">
+            <span class="meta-item"><strong>Architecture:</strong> Three control layers (Orchestrator, Policy Engine, Dashboard)</span>
+            <span class="meta-item"><strong>Target:</strong> PE/banking, healthcare, legal</span>
+          </div>
+
+          <p>
+            A consultancy/product that wraps OpenClaw-style agentic principles in three "control layers":
+            Agent Orchestrator (heartbeats, cron, scheduling), Policy Engine (gating every action through
+            compliance rules), and a Command Interface dashboard. Targets regulated industries: PE/banking,
+            healthcare, legal.
+          </p>
+          <p>
+            "Scoped permissions and secure credential management" is mentioned as a feature of their Enterprise
+            Integration capability — but the specific mechanism is not publicly documented. Policy enforcement
+            is configuration-driven (infrastructure-as-code), not architectural. Secrets sequestration is
+            implied, not structural.
+          </p>
+
+          <div class="findings-grid">
+            <div class="finding finding-good">
+              <div class="finding-icon">✅</div>
+              <div>
+                <strong>Policy-gated execution</strong>
+                <p>Every agent action passes through a policy engine before execution — approved tools, data
+                scopes, spending limits, model permissions. A real control layer, though enforcement-by-config
+                rather than enforcement-by-architecture.</p>
+              </div>
+            </div>
+            <div class="finding finding-good">
+              <div class="finding-icon">✅</div>
+              <div>
+                <strong>Compliance audit trails</strong>
+                <p>Full logging of every agent decision, action, and data access — built for SOX, FINRA, HIPAA
+                review. Strong posture for regulated industries.</p>
+              </div>
+            </div>
+            <div class="finding finding-warn">
+              <div class="finding-icon">⚠️</div>
+              <div>
+                <strong>No structural secrets sequestration</strong>
+                <p>Control is policy-based, not architectural. If the policy engine is misconfigured or bypassed
+                via prompt injection, the agent still has access to credentials. The underlying trust model
+                hasn't changed — only a compliance wrapper has been added.</p>
+              </div>
+            </div>
+            <div class="finding finding-warn">
+              <div class="finding-icon">⚠️</div>
+              <div>
+                <strong>No customer-controlled Spine</strong>
+                <p>The architecture is multi-layered but still vendor-managed. There is no equivalent to the
+                customer-owned Spine that physically holds secrets separately from inference. The separation
+                is logical, not architectural.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 05: Broader Ecosystem -->
+      <div class="research-section">
+        <div class="section-num">05</div>
+        <div class="section-content">
+          <h2>Broader Ecosystem</h2>
+          <h3>LangChain · CrewAI · AutoGen &amp; Others</h3>
+
+          <div class="ecosystem-grid">
+            <div class="ecosystem-card">
+              <div class="eco-header">
+                <span class="eco-name">LangChain / LangGraph</span>
+                <span class="eco-type">OSS Framework</span>
+              </div>
+              <div class="eco-verdict bad">No sequestration</div>
+              <p>Credentials passed as environment variables or injected into tool definitions. Security is
+              entirely the developer's responsibility — LangChain enforces nothing. LangSmith adds
+              observability but not secrets isolation.</p>
+            </div>
+
+            <div class="ecosystem-card">
+              <div class="eco-header">
+                <span class="eco-name">CrewAI</span>
+                <span class="eco-type">OSS Framework</span>
+              </div>
+              <div class="eco-verdict partial">RBAC, no structural isolation</div>
+              <p>Ships with role-based access control and encrypted data at rest. On-prem deployment
+              available. Code execution is not sandboxed by default — developer must isolate risky
+              operations. No credential injection boundary equivalent to a Spine.</p>
+            </div>
+
+            <div class="ecosystem-card">
+              <div class="eco-header">
+                <span class="eco-name">AutoGen (Microsoft)</span>
+                <span class="eco-type">OSS Enterprise</span>
+              </div>
+              <div class="eco-verdict partial">Docker isolation, Azure AD</div>
+              <p>Executes code in Docker containers — better process isolation than most. Azure AD
+              integration for enterprise auth. Still passes credentials via environment, not via a
+              brokered injection layer. Closest to modular execution, but the "Spine" concept
+              doesn't exist.</p>
+            </div>
+
+            <div class="ecosystem-card">
+              <div class="eco-header">
+                <span class="eco-name">Semantic Kernel (Microsoft)</span>
+                <span class="eco-type">Enterprise Microsoft</span>
+              </div>
+              <div class="eco-verdict partial">Enterprise patterns, vendor lock-in</div>
+              <p>Enterprise-grade security patterns built in — Azure AD, sandboxing, audit via Azure
+              Monitor. Strong for Azure-native shops. No structural secrets sequestration independent
+              of the Azure stack; trust boundary is Microsoft, not the customer.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 06: Summary Table -->
+      <div class="research-section">
+        <div class="section-num">06</div>
+        <div class="section-content">
+          <h2>Where Everyone Stands</h2>
+
+          <div class="comparison-table-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Framework</th>
+                  <th>Secrets sequestration</th>
+                  <th>Customer-owned control plane</th>
+                  <th>Registered Actuators</th>
+                  <th>Injection defense</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="row-us">
+                  <td><strong>Botsters</strong></td>
+                  <td><span class="status good">✓ Structural</span></td>
+                  <td><span class="status good">✓ Customer-owned Spine</span></td>
+                  <td><span class="status good">✓ Registered Actuators</span></td>
+                  <td><span class="status partial">◑ In development</span></td>
+                </tr>
+                <tr>
+                  <td>IronClaw (NEAR AI)</td>
+                  <td><span class="status good">✓ Host boundary</span></td>
+                  <td><span class="status bad">✗ Vendor TEE (NEAR AI)</span></td>
+                  <td><span class="status bad">✗ No actuator concept</span></td>
+                  <td><span class="status good">✓ Pattern detection</span></td>
+                </tr>
+                <tr>
+                  <td>IronClaw (ironclaw.tech)</td>
+                  <td><span class="status bad">✗ Policy only</span></td>
+                  <td><span class="status bad">✗ Vendor-managed</span></td>
+                  <td><span class="status partial">◑ Policy-gated</span></td>
+                  <td><span class="status partial">◑ Implied</span></td>
+                </tr>
+                <tr>
+                  <td>OpenClaw</td>
+                  <td><span class="status bad">✗ Env vars exposed</span></td>
+                  <td><span class="status bad">✗ None</span></td>
+                  <td><span class="status bad">✗ None</span></td>
+                  <td><span class="status bad">✗ None</span></td>
+                </tr>
+                <tr>
+                  <td>LangChain / CrewAI</td>
+                  <td><span class="status bad">✗ Developer's problem</span></td>
+                  <td><span class="status bad">✗ None</span></td>
+                  <td><span class="status bad">✗ None</span></td>
+                  <td><span class="status bad">✗ None</span></td>
+                </tr>
+                <tr>
+                  <td>AutoGen / Semantic Kernel</td>
+                  <td><span class="status bad">✗ Env / Azure</span></td>
+                  <td><span class="status partial">◑ Azure-native only</span></td>
+                  <td><span class="status partial">◑ Docker / Azure</span></td>
+                  <td><span class="status partial">◑ Azure Defender</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-legend">
+            <span class="status good">✓ Structural</span>
+            <span class="status partial">◑ Partial / Policy-based</span>
+            <span class="status bad">✗ Absent or developer-owned</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- 07: Conclusion -->
+      <div class="research-section">
+        <div class="section-num">07</div>
+        <div class="section-content">
+          <h2>The Gap</h2>
+          <p>
+            No framework in the current landscape combines all three properties structurally:
+          </p>
+          <ul class="gap-list">
+            <li><strong>Secrets the brain cannot see</strong> — enforced by architecture, not configuration</li>
+            <li><strong>A control plane the customer owns and installs</strong></li>
+            <li><strong>A registered, scoped execution boundary on customer machines</strong></li>
+          </ul>
+          <p>
+            IronClaw (NEAR AI) is the closest — structural credential injection at the host boundary —
+            but trust is delegated to NEAR AI's cloud, not the customer. Enterprise variants (IronClaw.tech,
+            Semantic Kernel) add compliance layers over fundamentally unchanged trust models.
+          </p>
+          <div class="conclusion-callout">
+            Botsters is the only architecture where the answer to "why attack?" is structural, not aspirational.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .research-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+  }
+
+  .date-label {
+    font-size: 0.9rem !important;
+    color: var(--color-text-dim) !important;
+    margin-top: 0.5rem !important;
+  }
+
+  .research-body {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .research-section {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    gap: 2rem;
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--border-muted);
+  }
+
+  .research-section:last-child {
+    border-bottom: none;
+  }
+
+  .section-num {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--border-subtle);
+    line-height: 1;
+    padding-top: 0.25rem;
+  }
+
+  .section-content h2 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-content h3 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--color-text);
+    margin-bottom: 1.5rem;
+  }
+
+  .competitor-name {
+    color: var(--color-amber) !important;
+  }
+
+  .competitor-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .meta-item {
+    background: var(--color-bg-secondary);
+    padding: 0.3rem 0.75rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-muted);
+  }
+
+  .section-content p {
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+    line-height: 1.7;
+  }
+
+  .section-content ul {
+    color: var(--color-text-muted);
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.7;
+  }
+
+  /* Findings */
+  .findings-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .finding {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    border-left: 3px solid;
+  }
+
+  .finding-icon {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+
+  .finding strong {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+  }
+
+  .finding p {
+    font-size: 0.875rem;
+    margin-bottom: 0 !important;
+    color: var(--color-text-muted);
+  }
+
+  .finding-good {
+    background: rgba(0, 255, 136, 0.05);
+    border-color: var(--color-success);
+  }
+
+  .finding-good strong {
+    color: var(--color-success);
+  }
+
+  .finding-warn {
+    background: rgba(255, 170, 0, 0.06);
+    border-color: var(--color-warning);
+  }
+
+  .finding-warn strong {
+    color: var(--color-warning);
+  }
+
+  .finding-bad {
+    background: rgba(220, 38, 38, 0.06);
+    border-color: var(--color-danger);
+  }
+
+  .finding-bad strong {
+    color: var(--color-danger);
+  }
+
+  /* Ecosystem grid */
+  .ecosystem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .ecosystem-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--border-muted);
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+
+  .eco-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.75rem;
+  }
+
+  .eco-name {
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .eco-type {
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .eco-verdict {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .eco-verdict.bad {
+    background: rgba(220, 38, 38, 0.15);
+    color: var(--color-danger);
+  }
+
+  .eco-verdict.partial {
+    background: rgba(255, 170, 0, 0.1);
+    color: var(--color-warning);
+  }
+
+  .ecosystem-card p {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 0;
+  }
+
+  /* Comparison table */
+  .comparison-table-wrap {
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    border: 1px solid var(--border-muted);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  .comparison-table th {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.875rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-muted);
+    white-space: nowrap;
+  }
+
+  .comparison-table td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--border-muted);
+    color: var(--color-text-muted);
+    vertical-align: middle;
+  }
+
+  .comparison-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .comparison-table td:first-child {
+    color: var(--color-text);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .row-us td {
+    background: rgba(255, 107, 53, 0.04);
+  }
+
+  .row-us td:first-child {
+    color: var(--color-accent) !important;
+  }
+
+  .status {
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .status.good {
+    color: var(--color-success);
+  }
+
+  .status.partial {
+    color: var(--color-warning);
+  }
+
+  .status.bad {
+    color: var(--color-danger);
+  }
+
+  .table-legend {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-top: 0.5rem !important;
+  }
+
+  /* Conclusion */
+  .gap-list {
+    margin: 1.25rem 0 1.5rem;
+    padding-left: 1.5rem;
+    color: var(--color-text-muted);
+  }
+
+  .gap-list li {
+    margin-bottom: 0.6rem;
+    line-height: 1.7;
+  }
+
+  .conclusion-callout {
+    margin-top: 2rem;
+    padding: 2rem 2.5rem;
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.08), rgba(220, 38, 38, 0.04));
+    border: 1px solid rgba(255, 107, 53, 0.3);
+    border-left: 4px solid var(--color-accent);
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 640px) {
+    .research-section {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .section-num {
+      font-size: 1.5rem;
+    }
+
+    .ecosystem-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
